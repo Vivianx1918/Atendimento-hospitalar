@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triagem - Sistema de Atendimento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --light-blue: #e0f2f7;
+            --dark-blue: #0056b3;
+            --text-color: #333;
+            --background-white: #fff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --red-priority: #dc3545;
+            --orange-priority: #fd7e14;
+            --yellow-priority: #ffc107;
+            --green-priority: #28a745;
+            --blue-priority: #17a2b8;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-blue);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .container {
+            background-color: var(--background-white);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            width: 90%;
+            max-width: 900px;
+            box-sizing: border-box;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease, transform 0.2s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            color: var(--dark-blue);
+            transform: translateX(-3px);
+        }
+
+        .back-button svg {
+            fill: var(--primary-blue);
+            transition: fill 0.3s ease;
+        }
+
+        .back-button:hover svg {
+            fill: var(--dark-blue);
+        }
+
+        h1 {
+            color: var(--primary-blue);
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Para responsividade */
+            gap: 15px;
+        }
+
+        .controls button {
+            background-color: var(--primary-blue);
+            color: var(--background-white);
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .controls button:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+        }
+
+        .patient-list {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: var(--background-white);
+            box-shadow: 0 2px 5px var(--shadow-color);
+            border-radius: 8px;
+            overflow: hidden; /* Garante que a borda arredondada seja aplicada */
+        }
+
+        .patient-list th, .patient-list td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .patient-list th {
+            background-color: var(--dark-blue);
+            color: var(--background-white);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .patient-list tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .patient-list tbody tr:nth-child(even) {
+            background-color: var(--light-blue);
+        }
+
+        .patient-list tbody tr:hover {
+            background-color: #dbeaf0; /* Um azul mais claro no hover */
+        }
+
+        .priority-select {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background-color: var(--background-white);
+            color: var(--text-color);
+        }
+
+        /* Estilos para as cores das prioridades */
+        .priority-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: var(--background-white);
+            font-size: 0.85rem;
+        }
+
+        .priority-tag.emergencia, .priority-select option[value="emergencia"] { background-color: var(--red-priority); }
+        .priority-tag.muito-urgente, .priority-select option[value="muito-urgente"] { background-color: var(--orange-priority); }
+        .priority-tag.urgente, .priority-select option[value="urgente"] { background-color: var(--yellow-priority); color: var(--text-color);} /* Amarelo pode precisar de texto escuro */
+        .priority-tag.pouco-urgente, .priority-select option[value="pouco-urgente"] { background-color: var(--green-priority); }
+        .priority-tag.nao-urgente, .priority-select option[value="nao-urgente"] { background-color: var(--blue-priority); }
+
+        /* Estilo para paciente chamado */
+        .called-patient {
+            background-color: #ffeeba !important; /* Amarelo claro para destaque */
+            border: 2px dashed var(--yellow-priority);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: var(--dark-blue);
+            font-size: 1.1rem;
+        }
+
+        /* Responsividade para a tabela */
+        @media (max-width: 768px) {
+            .patient-list thead {
+                display: none; /* Esconde o cabeçalho da tabela em telas pequenas */
+            }
+
+            .patient-list, .patient-list tbody, .patient-list tr, .patient-list td {
+                display: block; /* Faz com que todos os elementos da tabela se comportem como blocos */
+                width: 100%;
+            }
+
+            .patient-list tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+
+            .patient-list td {
+                text-align: right;
+                padding-left: 50%; /* Espaço para a "label" virtual */
+                position: relative;
+                border: none;
+            }
+
+            .patient-list td::before {
+                content: attr(data-label); /* Usa o atributo data-label como "label" */
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: 600;
+                color: var(--dark-blue);
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                <path d="M0 0h24v24H0V0z" fill="none"/>
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z"/>
+            </svg>
+            Voltar ao Menu
+        </a>
+
+        <h1>Triagem de Pacientes</h1>
+
+        <div class="controls">
+            <button id="callNextPatientBtn">Chamar Próximo Paciente</button>
+            <p>Paciente atual: <strong id="currentPatientDisplay">Nenhum</strong></p>
+        </div>
+
+        <table class="patient-list">
+            <thead>
+                <tr>
+                    <th>Ficha</th>
+                    <th>Nome</th>
+                    <th>Idade</th>
+                    <th>Prioridade</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="patientTableBody">
+                <tr>
+                    <td colspan="5" class="empty-state" id="emptyState">Nenhum paciente cadastrado para triagem.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const patientTableBody = document.getElementById('patientTableBody');
+        const callNextPatientBtn = document.getElementById('callNextPatientBtn');
+        const currentPatientDisplay = document.getElementById('currentPatientDisplay');
+        const emptyState = document.getElementById('emptyState');
+
+        
+    </script>
+</body>
+</html>

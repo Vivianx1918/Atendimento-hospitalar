@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display de Atendimento - Sistema de Triagem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Variáveis CSS para consistência de cores */
+        :root {
+            --primary-blue: #007bff;
+            --light-blue: #e0f2f7;
+            --dark-blue: #0056b3;
+            --text-color: #333;
+            --background-white: #fff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+
+            /* Cores de prioridade (as mesmas usadas nas outras páginas) */
+            --emergencia: #dc3545; /* Vermelho */
+            --muito-urgente: #fd7e14; /* Laranja */
+            --urgente: #ffc107; /* Amarelo */
+            --pouco-urgente: #28a745; /* Verde */
+            --nao-urgente: #17a2b8; /* Azul */
+
+            /* Cores de status */
+            --status-waiting: #6c757d; /* Cinza */
+            --status-in-attendance: #007bff; /* Azul primário */
+            --status-attended: #28a745; /* Verde */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-blue);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Alinhar ao topo */
+            min-height: 100vh;
+            overflow: hidden; /* Evita scroll desnecessário em algumas situações */
+        }
+
+        .display-wrapper {
+            display: flex;
+            width: 100vw; /* Ocupa a largura total da viewport */
+            height: 100vh; /* Ocupa a altura total da viewport */
+        }
+
+        /* Seção principal: Paciente Sendo Chamado */
+        .main-display {
+            flex: 3; /* Ocupa 3/4 da largura */
+            background-color: var(--background-white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-shadow: 2px 0 10px var(--shadow-color);
+            text-align: center;
+        }
+
+        .main-display h1 {
+            color: var(--dark-blue);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .current-patient-info {
+            background-color: var(--primary-blue);
+            color: var(--background-white);
+            padding: 40px 60px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            margin: 0 auto;
+            animation: pulse 1.5s infinite alternate; /* Animação de pulso */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }
+            100% { transform: scale(1.02); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); }
+        }
+
+        .current-patient-info .name {
+            font-size: 4rem; /* Nome bem grande */
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .current-patient-info .ficha,
+        .current-patient-info .location {
+            font-size: 2.2rem; /* Ficha e Local grandes */
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        /* Seção lateral: Próximos na Fila */
+        .sidebar-queue {
+            flex: 1; /* Ocupa 1/4 da largura */
+            background-color: var(--light-blue);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto; /* Permite scroll se a lista for longa */
+        }
+
+        .sidebar-queue h2 {
+            color: var(--dark-blue);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .next-patients-list {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+        }
+
+        .next-patients-list li {
+            background-color: var(--background-white);
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            border-left: 8px solid var(--primary-blue); /* Borda lateral azul */
+        }
+
+        .next-patients-list li strong {
+            display: block;
+            font-size: 1.3rem;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .next-patients-list li span {
+            font-size: 1rem;
+            color: var(--text-color);
+            display: block;
+        }
+
+        .priority-display-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: var(--background-white);
+            font-size: 0.75rem;
+            text-transform: capitalize;
+            margin-top: 5px;
+        }
+
+        /* Cores das tags de prioridade */
+        .priority-display-tag.emergencia { background-color: var(--emergencia); }
+        .priority-display-tag.muito-urgente { background-color: var(--muito-urgente); }
+        .priority-display-tag.urgente { background-color: var(--urgente); color: var(--text-color); }
+        .priority-display-tag.pouco-urgente { background-color: var(--pouco-urgente); }
+        .priority-display-tag.nao-urgente { background-color: var(--nao-urgente); }
+
+        .empty-display-state {
+            color: var(--dark-blue);
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 50px;
+            width: 100%;
+        }
+
+        /* Botão de voltar (opcional, para testes em desenvolvimento) */
+        .back-button {
+            position: fixed; /* Fixado para sempre estar visível */
+            top: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            z-index: 100; /* Garante que fique acima de outros elementos */
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .back-button svg {
+            fill: white;
+            height: 18px;
+            width: 18px;
+        }
+
+
+        /* Responsividade para telas menores (ex: tablets em modo paisagem, desktops menores) */
+        @media (max-width: 1024px) {
+            .main-display .current-patient-info .name {
+                font-size: 3rem;
+            }
+            .main-display .current-patient-info .ficha,
+            .main-display .current-patient-info .location {
+                font-size: 1.8rem;
+            }
+            .sidebar-queue h2 {
+                font-size: 1.5rem;
+            }
+            .next-patients-list li strong {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Responsividade para telas muito pequenas (ex: celulares) */
+        @media (max-width: 768px) {
+            .display-wrapper {
+                flex-direction: column; /* Colunas empilhadas em telas pequenas */
+            }
+            .main-display, .sidebar-queue {
+                flex: none; /* Remove flex-grow para usar height */
+                width: 100%;
+            }
+            .main-display {
+                min-height: 50vh; /* Ocupa metade da altura */
+                padding: 20px;
+            }
+            .sidebar-queue {
+                height: 50vh; /* Ocupa a outra metade da altura */
+                padding: 15px;
+            }
+            .main-display h1 {
+                font-size: 2rem;
+            }
+            .current-patient-info {
+                padding: 30px 40px;
+            }
+            .current-patient-info .name {
+                font-size: 2.5rem;
+            }
+            .current-patient-info .ficha,
+            .current-patient-info .location {
+                font-size: 1.5rem;
+            }
+            .sidebar-queue h2 {
+                font-size: 1.3rem;
+            }
+            .next-patients-list li {
+                padding: 12px;
+                border-left-width: 5px;
+            }
+            .next-patients-list li strong {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botão de Voltar (útil durante o desenvolvimento e testes) -->
+    <a href="index.html" class="back-button">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+            <path d="M0 0h24v24H0V0z" fill="none"/>
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z"/>
+        </svg>
+        Menu
+    </a>
+
+    <div class="display-wrapper">
+        <!-- Seção Principal: Paciente Sendo Chamado Agora -->
+        <div class="main-display">
+            <h1>PACIENTE SENDO CHAMADO</h1>
+            <div id="currentPatientSection" class="current-patient-info">
+                <div class="name" id="currentPatientName"></div>
+                <div class="ficha" id="currentPatientFicha"></div>
+                <div class="location" id="currentPatientLocation"></div>
+            </div>
+        </div>
+
+        <!-- Seção Lateral: Próximos na Fila -->
+        <div class="sidebar-queue">
+            <h2>PRÓXIMOS NA FILA</h2>
+            <ul id="nextPatientsList" class="next-patients-list">
+                <!-- Pacientes serão carregados aqui pelo JavaScript -->
+                <li class="empty-display-state" id="nextQueueEmptyState">Nenhum paciente aguardando.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const currentPatientName = document.getElementById('currentPatientName');
+        const currentPatientFicha = document.getElementById('currentPatientFicha');
+        const currentPatientLocation = document.getElementById('currentPatientLocation');
+        const currentPatientSection = document.getElementById('currentPatientSection');
+        const nextPatientsListElement = document.getElementById('nextPatientsList');
+        const nextQueueEmptyState = document.getElementById('nextQueueEmptyState');
+
+       
+    </script>
+</body>
+</html>
