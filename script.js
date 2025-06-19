@@ -26,3 +26,33 @@ function gerarFicha() {
 
     return 'F' + numero;
 }
+// cadastro
+if (document.getElementById('patientForm')) {
+    let form = document.getElementById('patientForm');
+
+    form.onsubmit = function (e) {
+        e.preventDefault();
+
+        let nome = document.getElementById('nome').value;
+        let idade = document.getElementById('idade').value;
+        let sexo = document.getElementById('sexo').value;
+        let prioridade = document.getElementById('prioridade').value;
+
+        let pacientes = carregarPacientes();
+
+        let novo = {
+            ficha: gerarFicha(),
+            nome: nome,
+            idade: idade,
+            sexo: sexo,
+            prioridade: prioridade,
+            status: 'aguardando'
+        };
+
+        pacientes.push(novo);
+        salvarPacientes(pacientes);
+
+        alert('Paciente cadastrado!');
+        form.reset();
+    }
+}
