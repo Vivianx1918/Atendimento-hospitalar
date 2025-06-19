@@ -1,0 +1,638 @@
+/* style.css */
+
+/* Variáveis CSS para consistência de cores */
+:root {
+    --primary-blue: #007bff;
+    --light-blue: #e0f2f7;
+    --dark-blue: #0056b3;
+    --text-color: #333;
+    --background-white: #fff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --border-color: #ccc; /* Adicionado do cadastro.html */
+
+    /* Cores de prioridade (consolidadas de todos os arquivos) */
+    --emergencia: #dc3545; /* Vermelho */
+    --muito-urgente: #fd7e14; /* Laranja */
+    --urgente: #ffc107; /* Amarelo */
+    --pouco-urgente: #28a745; /* Verde */
+    --nao-urgente: #17a2b8; /* Azul */
+
+    /* Cores de status (do atendimento.html e display.html) */
+    --status-waiting: #6c757d; /* Cinza */
+    --status-in-attendance: #007bff; /* Azul primário */
+    --status-attended: #28a745; /* Verde */
+
+    /* Cores de prioridade específicas de triagem (se diferentes, mas parece que são as mesmas) */
+    --red-priority: #dc3545;
+    --orange-priority: #fd7e14;
+    --yellow-priority: #ffc107;
+    --green-priority: #28a745;
+    --blue-priority: #17a2b8;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--light-blue);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    /* Adaptação para body flex-start para atendimento.html e flex-direction para index.html/triagem.html */
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box; /* Do atendimento.html */
+}
+
+/* Regras gerais de container, back-button, h1 */
+.container {
+    background-color: var(--background-white);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px var(--shadow-color);
+    width: 95%; /* Ajuste para atendimento.html */
+    max-width: 1200px; /* Ajuste para atendimento.html */
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+}
+/* Sobrescrita para containers menores, se necessário, ou usar max-width no container geral */
+@media (min-width: 769px) { /* Exemplo: ajustar max-width para telas maiores */
+    .container.cadastro-container { /* Exemplo de classe específica para o container de cadastro */
+        max-width: 500px;
+    }
+    .container.triagem-container {
+        max-width: 900px;
+    }
+    .container.menu-container {
+        max-width: 800px;
+    }
+}
+
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--primary-blue);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    z-index: 100; /* Para o display.html, garantir que esteja acima */
+}
+
+.back-button:hover {
+    color: var(--dark-blue);
+    transform: translateX(-3px);
+}
+
+.back-button svg {
+    fill: var(--primary-blue);
+    transition: fill 0.3s ease;
+}
+
+.back-button:hover svg {
+    fill: var(--dark-blue);
+}
+/* Adaptação específica para o back-button do display.html */
+.back-button.display-button {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+.back-button.display-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white; /* Mantém branco */
+    transform: none; /* Remove translateX */
+}
+.back-button.display-button svg {
+    fill: white;
+}
+
+
+h1 {
+    color: var(--primary-blue);
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Estilos específicos de cada página (agora no arquivo único) */
+
+/* index.html */
+.menu-container { /* Mantenha esta regra, pois ela é específica do index.html */
+    /* ... (coloque o CSS do .menu-container aqui, removendo duplicatas de padding, shadow, etc. que já estão no .container geral) */
+    width: 90%;
+    max-width: 800px;
+    padding: 30px;
+}
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 10px;
+}
+.menu-item {
+    background-color: var(--primary-blue);
+    color: var(--background-white);
+    border-radius: 8px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    min-height: 150px;
+    text-align: center;
+    gap: 10px;
+}
+.menu-item:hover {
+    background-color: var(--dark-blue);
+    transform: translateY(-5px);
+}
+.menu-item svg {
+    fill: var(--background-white);
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+@media (max-width: 600px) {
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+    .menu-item {
+        min-height: 120px;
+        font-size: 1rem;
+    }
+    .menu-item svg {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+
+/* cadastro.html */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 400;
+    color: var(--dark-blue);
+}
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+    width: calc(100% - 20px);
+    padding: 12px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus,
+.form-group select:focus {
+    border-color: var(--primary-blue);
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23007bff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+    cursor: pointer;
+}
+button[type="submit"] { /* Específico do botão de submit do formulário */
+    background-color: var(--primary-blue);
+    color: var(--background-white);
+    padding: 15px 25px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+}
+button[type="submit"]:hover {
+    background-color: var(--dark-blue);
+    transform: translateY(-2px);
+}
+button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+
+/* atendimento.html */
+body.atendimento-page { /* Exemplo de classe para body específico */
+    align-items: flex-start; /* Do atendimento.html */
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+h2 { /* Geral, mas aparece em atendimento.html */
+    color: var(--dark-blue);
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: left;
+}
+.queue-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+.queue-controls button {
+    background-color: var(--primary-blue);
+    color: var(--background-white);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.queue-controls button:hover {
+    background-color: var(--dark-blue);
+    transform: translateY(-2px);
+}
+.patient-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--background-white);
+    box-shadow: 0 2px 5px var(--shadow-color);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+.patient-table th, .patient-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+.patient-table th {
+    background-color: var(--dark-blue);
+    color: var(--background-white);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+.patient-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.patient-table tbody tr:nth-child(even) {
+    background-color: var(--light-blue);
+}
+.patient-table tbody tr:hover {
+    background-color: #dbeaf0;
+}
+.priority-tag, .status-tag {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    color: var(--background-white);
+    font-size: 0.85rem;
+    text-transform: capitalize;
+}
+.priority-tag.emergencia { background-color: var(--emergencia); }
+.priority-tag.muito-urgente { background-color: var(--muito-urgente); }
+.priority-tag.urgente { background-color: var(--urgente); color: var(--text-color); }
+.priority-tag.pouco-urgente { background-color: var(--pouco-urgente); }
+.priority-tag.nao-urgente { background-color: var(--nao-urgente); }
+.status-tag.waiting { background-color: var(--status-waiting); }
+.status-tag.in_attendance { background-color: var(--status-in-attendance); }
+.status-tag.attended { background-color: var(--status-attended); }
+.action-buttons button {
+    background-color: var(--primary-blue);
+    color: var(--background-white);
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    margin: 5px 2px;
+    white-space: nowrap;
+}
+.action-buttons button:hover {
+    background-color: var(--dark-blue);
+    transform: translateY(-1px);
+}
+.action-buttons button:active {
+    transform: translateY(0);
+}
+.action-buttons .btn-danger {
+    background-color: var(--emergencia);
+}
+.action-buttons .btn-danger:hover {
+    background-color: #c82333;
+}
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: var(--dark-blue);
+    font-size: 1.1rem;
+}
+/* Responsividade para tabelas */
+@media (max-width: 768px) {
+    .patient-table thead {
+        display: none;
+    }
+    .patient-table, .patient-table tbody, .patient-table tr, .patient-table td {
+        display: block;
+        width: 100%;
+    }
+    .patient-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .patient-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+    }
+    .patient-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: var(--dark-blue);
+    }
+    .action-buttons button {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
+
+
+/* display.html */
+body.display-page { /* Exemplo de classe para body específico */
+    align-items: flex-start;
+    overflow: hidden;
+}
+.display-wrapper {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+.main-display {
+    flex: 3;
+    background-color: var(--background-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    box-shadow: 2px 0 10px var(--shadow-color);
+    text-align: center;
+}
+.main-display h1 {
+    color: var(--dark-blue);
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+.current-patient-info {
+    background-color: var(--primary-blue);
+    color: var(--background-white);
+    padding: 40px 60px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    max-width: 90%;
+    margin: 0 auto;
+    animation: pulse 1.5s infinite alternate;
+}
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }
+    100% { transform: scale(1.02); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); }
+}
+.current-patient-info .name {
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.1;
+}
+.current-patient-info .ficha,
+.current-patient-info .location {
+    font-size: 2.2rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+.sidebar-queue {
+    flex: 1;
+    background-color: var(--light-blue);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+.sidebar-queue h2 {
+    color: var(--dark-blue);
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-align: center;
+}
+.next-patients-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+.next-patients-list li {
+    background-color: var(--background-white);
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    border-left: 8px solid var(--primary-blue);
+}
+.next-patients-list li strong {
+    display: block;
+    font-size: 1.3rem;
+    color: var(--primary-blue);
+    margin-bottom: 5px;
+}
+.next-patients-list li span {
+    font-size: 1rem;
+    color: var(--text-color);
+    display: block;
+}
+.priority-display-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    color: var(--background-white);
+    font-size: 0.75rem;
+    text-transform: capitalize;
+    margin-top: 5px;
+}
+.priority-display-tag.emergencia { background-color: var(--emergencia); }
+.priority-display-tag.muito-urgente { background-color: var(--muito-urgente); }
+.priority-display-tag.urgente { background-color: var(--urgente); color: var(--text-color); }
+.priority-display-tag.pouco-urgente { background-color: var(--pouco-urgente); }
+.priority-display-tag.nao-urgente { background-color: var(--nao-urgente); }
+.empty-display-state {
+    color: var(--dark-blue);
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 50px;
+    width: 100%;
+}
+/* Responsividade para display.html */
+@media (max-width: 1024px) {
+    .main-display .current-patient-info .name { font-size: 3rem; }
+    .main-display .current-patient-info .ficha, .main-display .current-patient-info .location { font-size: 1.8rem; }
+    .sidebar-queue h2 { font-size: 1.5rem; }
+    .next-patients-list li strong { font-size: 1.1rem; }
+}
+@media (max-width: 768px) {
+    .display-wrapper { flex-direction: column; }
+    .main-display, .sidebar-queue { flex: none; width: 100%; }
+    .main-display { min-height: 50vh; padding: 20px; }
+    .sidebar-queue { height: 50vh; padding: 15px; }
+    .main-display h1 { font-size: 2rem; }
+    .current-patient-info { padding: 30px 40px; }
+    .current-patient-info .name { font-size: 2.5rem; }
+    .current-patient-info .ficha, .current-patient-info .location { font-size: 1.5rem; }
+    .sidebar-queue h2 { font-size: 1.3rem; }
+    .next-patients-list li { padding: 12px; border-left-width: 5px; }
+    .next-patients-list li strong { font-size: 1rem; }
+}
+
+
+/* triagem.html */
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.controls button {
+    background-color: var(--primary-blue);
+    color: var(--background-white);
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.controls button:hover {
+    background-color: var(--dark-blue);
+    transform: translateY(-2px);
+}
+.patient-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--background-white);
+    box-shadow: 0 2px 5px var(--shadow-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.patient-list th, .patient-list td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+.patient-list th {
+    background-color: var(--dark-blue);
+    color: var(--background-white);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+.patient-list tbody tr:last-child td {
+    border-bottom: none;
+}
+.patient-list tbody tr:nth-child(even) {
+    background-color: var(--light-blue);
+}
+.patient-list tbody tr:hover {
+    background-color: #dbeaf0;
+}
+.priority-select {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background-color: var(--background-white);
+    color: var(--text-color);
+}
+/* Cores das prioridades (consolidadas) */
+.priority-tag.emergencia, .priority-select option[value="emergencia"] { background-color: var(--emergencia); }
+.priority-tag.muito-urgente, .priority-select option[value="muito-urgente"] { background-color: var(--muito-urgente); }
+.priority-tag.urgente, .priority-select option[value="urgente"] { background-color: var(--urgente); color: var(--text-color);}
+.priority-tag.pouco-urgente, .priority-select option[value="pouco-urgente"] { background-color: var(--pouco-urgente); }
+.priority-tag.nao-urgente, .priority-select option[value="nao-urgente"] { background-color: var(--nao-urgente); }
+.called-patient {
+    background-color: #ffeeba !important;
+    border: 2px dashed var(--yellow-priority);
+}
+/* Responsividade para a tabela */
+@media (max-width: 768px) {
+    .patient-list thead { display: none; }
+    .patient-list, .patient-list tbody, .patient-list tr, .patient-list td { display: block; width: 100%; }
+    .patient-list tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .patient-list td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+    }
+    .patient-list td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: var(--dark-blue);
+    }
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

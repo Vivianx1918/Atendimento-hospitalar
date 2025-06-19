@@ -5,108 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu Principal - Sistema de Triagem</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Variáveis CSS para consistência de cores */
-        :root {
-            --primary-blue: #007bff;
-            --light-blue: #e0f2f7;
-            --dark-blue: #0056b3;
-            --text-color: #333;
-            --background-white: #fff;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-        }
-
-        /* Estilos globais para o corpo da página */
-        body {
-            font-family: 'Roboto', sans-serif; /* Fonte padrão */
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-blue); /* Fundo azul claro */
-            color: var(--text-color);
-            display: flex;
-            justify-content: center; /* Centraliza horizontalmente */
-            align-items: center; /* Centraliza verticalmente */
-            min-height: 100vh; /* Ocupa a altura total da viewport */
-            flex-direction: column; /* Para empilhar o título e o grid */
-        }
-
-        /* Contêiner principal do menu */
-        .menu-container {
-            background-color: var(--background-white); /* Fundo branco para o contêiner */
-            padding: 30px;
-            border-radius: 10px; /* Cantos arredondados */
-            box-shadow: 0 4px 20px var(--shadow-color); /* Sombra suave */
-            width: 90%; /* Largura responsiva */
-            max-width: 800px; /* Largura máxima */
-            box-sizing: border-box;
-            text-align: center;
-        }
-
-        /* Título da página */
-        h1 {
-            color: var(--primary-blue); /* Cor azul principal */
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-
-        /* Grid para os itens do menu */
-        .menu-grid {
-            display: grid;
-            /* Layout responsivo: 2 colunas em telas maiores, 1 coluna em telas menores */
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px; /* Espaçamento entre os itens */
-            padding: 10px; /* Padding para o grid */
-        }
-
-        /* Estilo para cada item do menu (botão/box) */
-        .menu-item {
-            background-color: var(--primary-blue); /* Fundo azul principal */
-            color: var(--background-white); /* Texto branco */
-            border-radius: 8px; /* Cantos arredondados */
-            padding: 25px;
-            display: flex;
-            flex-direction: column; /* Ícone em cima do texto */
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-decoration: none; /* Remove sublinhado do link */
-            transition: background-color 0.3s ease, transform 0.2s ease; /* Transições suaves */
-            box-shadow: 0 2px 5px var(--shadow-color); /* Sombra para profundidade */
-            min-height: 150px; /* Altura mínima para os boxes grandes */
-            text-align: center;
-            gap: 10px; /* Espaço entre o ícone e o texto */
-        }
-
-        /* Efeito de hover nos itens do menu */
-        .menu-item:hover {
-            background-color: var(--dark-blue); /* Azul mais escuro no hover */
-            transform: translateY(-5px); /* Efeito de "levantar" */
-        }
-
-        /* Estilo para os ícones SVG dentro dos itens do menu */
-        .menu-item svg {
-            fill: var(--background-white); /* Cor do ícone (branco) */
-            width: 50px; /* Tamanho do ícone */
-            height: 50px;
-            margin-bottom: 5px; /* Espaço entre ícone e texto */
-        }
-
-        /* Media queries para responsividade em telas menores */
-        @media (max-width: 600px) {
-            .menu-grid {
-                grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
-            }
-            .menu-item {
-                min-height: 120px; /* Altura um pouco menor em telas menores */
-                font-size: 1rem;
-            }
-            .menu-item svg {
-                width: 40px;
-                height: 40px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="main.css">
 </head>
 <body>
     <div class="menu-container">
@@ -150,5 +49,6 @@
             </a>
         </div>
     </div>
+<script src="script.js"></script>    
 </body>
 </html>
