@@ -8,17 +8,9 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
-    <!-- Botão de Voltar (útil durante o desenvolvimento e testes) -->
-    <a href="index.html" class="back-button">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
-            <path d="M0 0h24v24H0V0z" fill="none"/>
-            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z"/>
-        </svg>
-        Menu
-    </a>
+     <a href="index.html" class="back-button">⬅ Menu</a>
 
     <div class="display-wrapper">
-        <!-- Seção Principal: Paciente Sendo Chamado Agora -->
         <div class="main-display">
             <h1>PACIENTE SENDO CHAMADO</h1>
             <div id="currentPatientSection" class="current-patient-info">
@@ -28,15 +20,65 @@
             </div>
         </div>
 
-        <!-- Seção Lateral: Próximos na Fila -->
         <div class="sidebar-queue">
             <h2>PRÓXIMOS NA FILA</h2>
             <ul id="nextPatientsList" class="next-patients-list">
-                <!-- Pacientes serão carregados aqui pelo JavaScript -->
                 <li class="empty-display-state" id="nextQueueEmptyState">Nenhum paciente aguardando.</li>
             </ul>
         </div>
     </div>
-<script src="script.js"></script>
+
+    <script>
+        const nomePacienteAtual = document.getElementById('currentPatientName');
+        const fichaPacienteAtual = document.getElementById('currentPatientFicha');
+        const localPacienteAtual = document.getElementById('currentPatientLocation');
+        const secaoPacienteAtual = document.getElementById('currentPatientSection');
+        const listaProximosPacientes = document.getElementById('nextPatientsList');
+        const estadoFilaVazia = document.getElementById('nextQueueEmptyState');
+
+        function carregarPacientes() {
+            return JSON.parse(localStorage.getItem('pacientes')) || [];
+        }
+
+        function renderizarDisplay() {
+            const pacientes = carregarPacientes();
+            let emAtendimento = pacientes.find(p => p.status === 'em_triagem' || p.status === 'em_atendimento');
+
+            if (emAtendimento) {
+                nomePacienteAtual.textContent = emAtendimento.nome.toUpperCase();
+                fichaPacienteAtual.textContent = `FICHA: ${emAtendimento.ficha}`;
+                localPacienteAtual.textContent = emAtendimento.status === 'em_triagem' ? 'DIRIJA-SE AO: Guichê de Triagem' : 'DIRIJA-SE AO: Consultório Médico';
+                secaoPacienteAtual.style.display = 'block';
+            } else {
+                nomePacienteAtual.textContent = 'NENHUM PACIENTE SENDO CHAMADO';
+                fichaPacienteAtual.textContent = '';
+                localPacienteAtual.textContent = '';
+            }
+
+            const fila = pacientes.filter(p => p.status === 'aguardando');
+            listaProximosPacientes.innerHTML = '';
+
+            if (fila.length === 0) {
+                estadoFilaVazia.style.display = 'block';
+                listaProximosPacientes.appendChild(estadoFilaVazia);
+            } else {
+                estadoFilaVazia.style.display = 'none';
+                fila.slice(0, 5).forEach(p => {
+                    const item = document.createElement('li');
+                    item.innerHTML = `
+                        <strong>${p.nome}</strong><br>
+                        <span>Ficha: ${p.ficha}</span><br>
+                        <span>Prioridade: <span class="priority-display-tag ${p.prioridade}">${p.prioridade.replace('-', ' ')}</span></span>
+                    `;
+                    listaProximosPacientes.appendChild(item);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarDisplay();
+            setInterval(renderizarDisplay, 3000);
+        });
+    </script>
 </body>
 </html>
