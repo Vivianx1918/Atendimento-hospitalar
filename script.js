@@ -1,4 +1,3 @@
-//Cadastro de Pacientes
 // Para salvar o paciente localStorage
 function salvarPacientes(pacientes) {
     localStorage.setItem('pacientes', JSON.stringify(pacientes));
@@ -57,8 +56,80 @@ if (document.getElementById('patientForm')) {
         form.reset();
     }
 }
+//atendimento
 
+if (document.getElementById('queueTableBody')) {
+    let filaTabela = document.getElementById('queueTableBody');
+    let historicoTabela = document.getElementById('historyTableBody');
 
+    function exibirAtendimento() {
+        let pacientes = carregarPacientes();
+        let fila = organizarFila(pacientes);
+
+        filaTabela.innerHTML = '';
+        historicoTabela.innerHTML = '';
+
+        if (fila.length == 0) {
+            filaTabela.innerHTML = '<tr><td colspan="6">Nenhum paciente aguardando.</td></tr>';
+        } else {
+            fila.forEach(function (p) {
+                let linha = `<tr>
+                    <td>${p.ficha}</td>
+                    <td>${p.nome}</td>
+                    <td>${p.idade}</td>
+                    <td>${p.prioridade}</td>
+                    <td>Aguardando</td>
+                    <td><button onclick="atender('${p.ficha}')">Atender</button></td>
+                </tr>`;
+                filaTabela.innerHTML += linha;
+            });
+        }
+
+        let atendidos = pacientes.filter(p => p.status == 'atendido');
+
+        if (atendidos.length == 0) {
+            historicoTabela.innerHTML = '<tr><td colspan="5">Nenhum atendimento feito.</td></tr>';
+        } else {
+            atendidos.forEach(function (p) {
+                let linha = `<tr>
+                    <td>${p.ficha}</td>
+                    <td>${p.nome}</td>
+                    <td>${p.prioridade}</td>
+                    <td>Atendido</td>                  
+                </tr>`;
+                historicoTabela.innerHTML += linha;
+            });
+        }
+    }
+
+    function organizarFila(lista) {
+        let ordem = { 'emergencia': 1, 'muito-urgente': 2, 'urgente': 3, 'pouco-urgente': 4, 'nao-urgente': 5 };
+        return lista.filter(p => p.status == 'aguardando').sort(function (a, b) {
+            return ordem[a.prioridade] - ordem[b.prioridade];
+        });
+    }
+
+    window.atender = function (ficha) {
+        let pacientes = carregarPacientes();
+        let paciente = pacientes.find(p => p.ficha == ficha);
+        if (paciente) {
+            paciente.status = 'atendido';
+            salvarPacientes(pacientes);
+            exibirAtendimento();
+        }
+    }
+
+    document.getElementById('callNextPatientBtn').onclick = function () {
+        let fila = organizarFila(carregarPacientes());
+        if (fila.length > 0) {
+            atender(fila[0].ficha);
+        } else {
+            alert('Nenhum paciente na fila.');
+        }
+    }
+
+    exibirAtendimento();
+}
 
 //  Triagem
 
